@@ -1,41 +1,38 @@
 from django.db import models
 from datetime import datetime
 from datetime import deltatime
-
+from datetime import time
 
 # Create your models here.
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 #import uuid
 
 class Evento(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    nombre = models.CharField(max_length=80, help_text='Entre el nombre del evento')
-    descripcion = models.TextField(max_length=256, help_text='Entre una descripcion breve del evento')
-    tarifa = models.DecimalField(max_digits=8, decimal_places=2)
-    duracion = models.DurationField(datetime.deltatime)
-    imagen = models.ImageField(upload_to = 'pic_folder/', default = 'pic_folder/None/no-img.jpg')
-    promo = models.ForeignKey('Promocion', on_delete=models.SET_NULL, null=True)
 
-   class Meta:
+    nombre = models.CharField(max_length=80)
+    descripcion = models.TextField(max_length=256)
+    tarifa = models.DecimalField(max_digits=8, decimal_places=2)
+    duracion = models.TimeField(default=datetime.now().replace(hour=4, minute=0, second=0, microsecond=0), blank=True)
+	#fecha_efectiva = models.DateField(default=datetime.datetime.strptime("9999-31-12", "%Y-%m-%d").date())
+	fecha_efectiva = models.DateField(default=datetime.datetime.date(9999, 12, 31))
+	EVENT_ESTADO = (
+        ('a', 'activo'),
+        ('i', 'inactivo'),
+    )
+	models.CharField(max_length=1, choices=EVENT_ESTADO, blank=True, default='a' )
+       
+    class Meta:
         ordering = ["nombre"]
 		
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+
         return self.nombre   
 	
+class Material(models.Model):
 
-
-class EventoMaterial(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
     evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
-	libro_estudio = models.TextField(max_length=100)
-	guia_estudio =  models.TextField(max_length=100 )
+	libro_estudio = models.TextField(max_length=80)
+	guia_estudio =  models.TextField(max_length=80)
 	MULT_MEDIA = (
         ('d', 'DVD'),
         ('c', 'CD'),
@@ -43,70 +40,62 @@ class EventoMaterial(models.Model):
 		('k', 'Disco'),
 		('o', 'Otro'),        
     )
-	multimedios = models.CharField(max_length=1, choices=MULT_MEDIA, blank=True, default='o' )
-    
-
+	multi_medios = models.CharField(max_length=1, choices=MULT_MEDIA, blank=True, default='o' )
+ 
    class Meta:
         ordering = ["Evento"]
+		verbose_name="Material"
+		verbose_name_plural="Materiales"
 		
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+
         return self.evento.nombre   
 
 		
 class Promocion(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, verbose_name='Codigo')
-    ciclo = models.CharField(max_length=50, help_text='Entre nombre del ciclo del evento')
+
+    nombre_ciclo = models.ForeignKey('Ciclo', on_delete=models.SET_NULL, null=True)
+	nombre_programa = models.ForeignKey('Programa', on_delete=models.SET_NULL, null=True)
+	evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
     fecha_inicio = models.DateField(default=datetime.today)
-    fecha_fin = models.DateField(default=datetime.today)
-    fecha_cierre = models.DateField(default=datetime.today)
-    
+    fecha_fin = models.DateField(default=datetime.today + timedelta(days=30))
+    imagen = models.ImageField(upload_to = 'pic_folder/', default = 'pic_folder/None/no-img.jpg')
+
     class Meta:
         ordering = ["fecha_inicio"]
 		verbose_name = "Promoci\u00F3n"
 		verbose_name_plural = "Promociones"
         
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
-        return '{0} ({1}) {2} {3}'.format(self.ciclo, self.fecha_inicio, self.fecha_fin, self.fecha_cierre)
+    
+        return self.evento.nombre
         
-    
-class FechaEvento(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
-    fecha = models.DateField(default=datetime.today)
-    hora_inicio = models.DurationField(datetime.deltatime)
-    hora_final = models.DurationField(datetime.deltatime)
-    
-    class Meta:
-        ordering = ["fecha"]
+class Ciclo(models.Model):
+        
+    nombre = models.CharField(max_length=80)
         
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
-        return '{0} ({1} {2} (3}'.format(self.evento.nombre, self.fecha, self.hora_inicio, self.hora_final)
+    
+        return self.nombre
         
-   
-
+        
+class Programa(models.Model):
+        
+    nombre = models.CharField(max_length=80)
+        
+    def __str__(self):
+    
+        return self.evento.nombre
+        
+  
 class Exposicion(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
+    
     evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
     expositor = models.ForeignKey('Expositor', on_delete=models.SET_NULL, null=True)
     localidad = models.ForeignKey('Localidad', on_delete=models.SET_NULL, null=True)
-    cap_minima = models.IntegerField(default=0, verbose_name='Capacidad Minima' )
-    cap_maxima = models.IntegerField(default=0, verbose_name='Capacidad Maxima' )
+    fecha_inicio = models.DateField(default=datetime.today, blank=True)
+    hora_inicio = models.TimeField(default=time(10, 0, 0, 0), blank=True)
+    hora_final = models.TimeField(default=time(12, 0, 0, 0), blank=True)
 	
     class Meta:
         ordering = ["fecha_inicio"]
@@ -115,21 +104,16 @@ class Exposicion(models.Model):
 
             
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
-        return self.id
+    
+        return evento.nombre
 
 class Expositor(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    cedula = models.CharField(max_length=11, help_text='Entre su cedula')
+    
+    cedula = models.CharField(max_length=11)
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
     direccion = models.CharField(max_length=256)
     correo = models.EmailField()
-    fecha = models.DateField(auto_now_add=True)
     tarifa = models.DecimalField(max_digits=8, decimal_places=2)
     EXPO_ESTADO = (
         ('a', 'activo'),
@@ -137,29 +121,25 @@ class Expositor(models.Model):
         
     )
     estado = models.CharField(max_length=1, choices=EXPO_ESTADO, blank=True, default='a')
-
+    fecha = fecha = models.DateField(default=datetime.today, editable=False)
+	
     class Meta:
-        ordering = ["apellido"]
+        ordering = ["apellido", "nombre"]
 		verbose_name = "Expositor"
 		verbose_name_plural = "Expositores"
 
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+    
         return '{0}, {1}'.format(self.apellido, self.nombre)
         
     
 class Localidad(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, verbose_name='Codigo')
+        
     nombre = models.CharField(max_length=50)
     edificio = models.CharField(max_length=50)
 	direccion = models.CharField(max_length=120)
     salon = models.CharField(max_length=50)
-    capacidad = models.IntegerField(default=0" )
+    capacidad = models.IntegerField(default=0 )
 	
     class Meta:
         ordering = ["direccion"]
@@ -167,78 +147,42 @@ class Localidad(models.Model):
 		verbose_name_plural = "Localidades"
             
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+    
         return self.nombre
 
 class Participante(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, verbose_name='Codigo')
+    
     cedula = models.CharField(max_length=11, help_text='Entre su cedula')
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
     direccion = models.CharField(max_length=120)
     correo = models.EmailField()
     telefono = models.CharField(max_length=10)
+	fecha = models.DateField(default=datetime.today, editable=False)
 	
     class Meta:
-        ordering = ["apellido"]
+        ordering = ["apellido", "nombre"]
 		
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+    
         return '{0}, {1}'.format(self.apellido, self.nombre)
 
 class Registro(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, verbose_name='Codigo')
+      
     evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
-    agente_pago = models.ForeignKey('AgentePago', on_delete=models.SET_NULL, null=True)
+	exposicion = models.ForeignKey('Exposicion', on_delete=models.SET_NULL, null=True)
     participante  = models.ForeignKey('Participante', on_delete=models.SET_NULL, null=True)
-    fecha_evento = models.ForeignKey('FechaEvento', on_delete=models.SET_NULL, null=True)
-	
+    fecha = models.DateField(default=datetime.today, editable=False)
     class Meta:
         ordering = ['Evento', 'Participante']
 		
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+    
         return '{0}, {1}'.format(self.evento.nombre, self.participante.nombre)
         
-class AgentePago(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, verbose_name='Codigo')
-    cedula = models.CharField(max_length=11, help_text='Entre su cedula')
-    nombre = models.CharField(max_length=60)
-    telefono = models.CharField(max_length=10)
-    contacto = models.CharField(max_length=60)
-    direccion = models.CharField(max_length=120)
-    correo = models.EmailField()
-	
-    class Meta:
-        ordering = ['cedula', 'nombre']     
-		
-    def __str__(self):
-        """
-        String for representing the Model object.
-        """
-        return '{0}, {1}'.format(self.cedula, self.nombre)        
 
 class Recibo(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, verbose_name='Recibo Numero')
-    agente_pago = models.ForeignKey('AgentePago', on_delete=models.SET_NULL, null=True)
+       
     registro = models.ForeignKey('Registro', on_delete=models.SET_NULL, null=True)
     referencia = models.CharField(max_length=50)
     nota = models.TextField(max_length=256)
@@ -247,9 +191,6 @@ class Recibo(models.Model):
     total = models.DecimalField((max_digits=8, decimal_places=2))
                  
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
-        return '{0}, {1}'.format(self.agente_pago.cedula, self.agente_pago.nombre)        
+        return '{0}, {1}'.format(self.registro.participante.cedula, self.registro.participante.nombre)        
 
         
