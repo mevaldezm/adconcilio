@@ -4,8 +4,9 @@ from django.db import models
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 #import uuid
 from datetime import datetime
-from datetime import  timedelta
+from datetime import timedelta
 from datetime import time
+from django.core.validators import RegexValidator
 
 class Evento(models.Model):
 
@@ -14,7 +15,7 @@ class Evento(models.Model):
     tarifa = models.DecimalField(max_digits=8, decimal_places=2)
     duracion = models.TimeField(default=datetime.now().replace(hour=4, minute=0, second=0, microsecond=0), blank=True)
     #fecha_efectiva = models.DateField(default=datetime.strptime("9999-12-31", "%Y-%m-%d").date())
-    fecha_efectiva = models.DateField(default=datetime(9999, 12, 31))
+    fecha_efectiva = models.DateField(default=datetime(9999, 12, 31), editable=False)
     EVENT_ESTADO = (
         ('a', 'activo'),
         ('i', 'inactivo'),
@@ -31,8 +32,8 @@ class Evento(models.Model):
 class Material(models.Model):
 
     evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
-    libro_estudio = models.TextField(max_length=80)
-    guia_estudio =  models.TextField(max_length=80)
+    libro_estudio = models.CharField(max_length=80)
+    guia_estudio =  models.CharField(max_length=80)
     MULT_MEDIA = (
         ('d', 'DVD'),
         ('c', 'CD'),
@@ -73,7 +74,7 @@ class Promocion(models.Model):
 class Ciclo(models.Model):
         
     nombre = models.CharField(max_length=80)
-        
+    
     def __str__(self):
     
         return self.nombre
@@ -85,7 +86,7 @@ class Programa(models.Model):
         
     def __str__(self):
     
-        return self.evento.nombre
+        return self.nombre
         
   
 class Exposicion(models.Model):
@@ -105,7 +106,7 @@ class Exposicion(models.Model):
             
     def __str__(self):
     
-        return evento.nombre
+        return self.evento.nombre
 
 class Expositor(models.Model):
     
@@ -142,17 +143,18 @@ class Localidad(models.Model):
     capacidad = models.IntegerField(default=0 )
     
     class Meta:
-        ordering = ["direccion"]
+        ordering = ["nombre", "direccion"]
         verbose_name = "Localidad"
         verbose_name_plural = "Localidades"
             
     def __str__(self):
     
-        return self.nombre
+        return '{0}, {1}'.format(self.nombre, self.direccion)
 
 class Participante(models.Model):
-    
-    cedula = models.CharField(max_length=11, help_text='Entre su cedula')
+
+    numeric = RegexValidator(r'^[0-9]*$', 'Solo numeros son permitidos')
+    cedula = models.CharField(max_length=11, blank=True, null=True, validators=[numeric])
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
     direccion = models.CharField(max_length=120)
@@ -179,7 +181,7 @@ class Registro(models.Model):
         
     def __str__(self):
     
-        return '{0}, {1}'.format(self.evento.nombre, self.participante.nombre)
+        return '{0}; {1}, {2} '.format(self.evento.nombre, self.participante.apellido, self.participante.nombre)
         
 '''
 class Factura(models.Model):
