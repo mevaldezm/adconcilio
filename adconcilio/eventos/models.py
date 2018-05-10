@@ -180,10 +180,27 @@ class Registro(models.Model):
     
         return '{0}, {1}'.format(self.evento.nombre, self.participante.nombre)
         
-
-class Recibo(models.Model):
+'''
+class Factura(models.Model):
        
-    registro = models.ForeignKey('Registro', on_delete=models.SET_NULL, null=True)
+    participante = models.ForeignKey('Participante', on_delete=models.SET_NULL, null=True)
+    referencia = models.CharField(max_length=50)
+    nota = models.TextField(max_length=256)
+    FACT_ESTADO = (
+        ('p', 'pagada'),
+        ('n', 'nueva'),
+		('c', 'cancelada'),
+    )
+    estado = models.CharField(max_length=1, choices=FACT_ESTADO, blank=True, default='n')
+    fecha = fecha = models.DateField(default=datetime.today, editable=False)
+                     
+    def __str__(self):
+        return '{0}, {1}'.format(self.registro.participante.cedula, self.registro.participante.nombre)        
+		
+class DetalleFactura(models.Model):
+       
+    factura = models.ForeignKey('Factura', on_delete=models.SET_NULL, null=True)
+	registro = models.ForeignKey('Registro', on_delete=models.SET_NULL, null=True)
     referencia = models.CharField(max_length=50)
     nota = models.TextField(max_length=256)
     fecha = models.DateField(default=datetime.today, editable=False)
@@ -192,5 +209,16 @@ class Recibo(models.Model):
                  
     def __str__(self):
         return '{0}, {1}'.format(self.registro.participante.cedula, self.registro.participante.nombre)        
+		
+class Recibo(models.Model):
+       
+    Factura= models.ForeignKey('Factura', on_delete=models.SET_NULL, null=True)
+    referencia = models.CharField(max_length=50)
+    nota = models.TextField(max_length=256)
+    fecha = models.DateField(default=datetime.today, editable=False)
+    total = models.DecimalField((max_digits=8, decimal_places=2))
+                 
+    def __str__(self):
+        return '{0}, {1}'.format(self.registro.participante.cedula, self.registro.participante.nombre)        
 
-        
+  '''      
