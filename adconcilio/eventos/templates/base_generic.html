@@ -69,13 +69,46 @@
 
 <body>
 
+<div class="col-sm-10 ">
+   <nav class="fh5co-nav" role="navigation">
+      <div class="container-wrap">
+         <div class="top-menu">
+            <div class="row">
+               <div class="col-md-12 col-offset-0 text-center">
+                  <div id="fh5co-logo"><a href="index.html">AD Concilio</a></div>
+               </div>
+               <div class="col-md-12 col-md-offset-0 text-center menu-1">
+                  <ul>
+                     <li class="active"><a href="index.html">Inicio</a></li>
+                     <li><a href="sermons.html">Sermones</a></li>
+                     <li class="has-dropdown">
+                        <a href="news.html">Noticias</a>
+                        <ul class="dropdown">
+                           <li><a href="#">Ministerio</a></li>
+                           <li><a href="#">Misioneros M&eacute;dicos</a></li>
+                           <li><a href="#">Vida en el campo</a></li>
+                           <li><a href="#">Obreros del Evengelio</a></li>
+                        </ul>
+                     </li>
+                     <li><a href="events.html">Eventos</a></li>
+                     <li><a href="about.html">Nosotros</a></li>
+                     <li><a href="contact.html">Contactos</a></li>
+                     <li><a href="#" class="donate">Donaciones</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+   </nav>
+</div>
+
   <div class="container-fluid">
 
     <div class="row">
       <div class="col-sm-2">
       {% block sidebar %}
       
-     {% endblock %}
+      {% endblock %}
       </div>
       <div class="col-sm-10 ">
       {% block content %}{% endblock %}
