@@ -15,6 +15,7 @@ class Evento(models.Model):
     tarifa = models.DecimalField(max_digits=8, decimal_places=2)
     duracion = models.TimeField(default=datetime.now().replace(hour=4, minute=0, second=0, microsecond=0), blank=True)
     #fecha_efectiva = models.DateField(default=datetime.strptime("9999-12-31", "%Y-%m-%d").date())
+    imagen = models.ImageField(upload_to = 'event_images/', default = 'event_images/None/no-img.jpg')
     fecha_efectiva = models.DateField(default=datetime(9999, 12, 31), editable=False)
     EVENT_ESTADO = (
         ('a', 'activo'),
@@ -60,7 +61,7 @@ class Promocion(models.Model):
     evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
     fecha_inicio = models.DateField(default=datetime.today)
     fecha_fin = models.DateField(default = datetime.today)
-    imagen = models.ImageField(upload_to = 'pic_folder/', default = 'pic_folder/None/no-img.jpg')
+    imagen = models.ImageField(upload_to = 'promo_images/', default = 'promo_images/None/no-img.jpg')
 
     class Meta:
         ordering = ["fecha_inicio"]
