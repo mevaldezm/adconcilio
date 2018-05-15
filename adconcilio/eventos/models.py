@@ -13,15 +13,18 @@ class Evento(models.Model):
     nombre = models.CharField(max_length=80)
     descripcion = models.TextField(max_length=256)
     tarifa = models.DecimalField(max_digits=8, decimal_places=2)
+    fecha_inicio = models.DateField(default=datetime.today)
+    fecha_fin = models.DateField(default=datetime.today)
     duracion = models.TimeField(default=datetime.now().replace(hour=4, minute=0, second=0, microsecond=0), blank=True)
     #fecha_efectiva = models.DateField(default=datetime.strptime("9999-12-31", "%Y-%m-%d").date())
     imagen = models.ImageField(upload_to = 'event_images/', default = 'event_images/None/no-img.jpg')
+    nota = models.CharField(max_length = 60, blank=True, help_text = 'Entre una nota breve')
     fecha_efectiva = models.DateField(default=datetime(9999, 12, 31), editable=False)
     EVENT_ESTADO = (
         ('a', 'activo'),
         ('i', 'inactivo'),
     )
-    models.CharField(max_length=1, choices=EVENT_ESTADO, blank=True, default='a' )
+    estado = models.CharField(max_length=1, choices=EVENT_ESTADO, blank=True, default='a' )
 	
     class Meta:
         ordering = ["nombre"]
