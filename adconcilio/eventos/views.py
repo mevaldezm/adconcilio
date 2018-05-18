@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
 # Create your views here.
-from .models import Participante
+from .models import Evento
+from django.views import generic
 
 def index(request):
     """
@@ -16,3 +17,18 @@ def index(request):
         'index.html',
         
     )
+
+
+class EventoListView(generic.ListView):
+
+    def evento_detalle_view(request,pk):
+        try:
+            evento_id=Evento.objects.get(pk=pk)
+        except Evento.DoesNotExist:
+            raise Http404("Evento no existe")
+    
+        return render(
+            request,
+            'eventos/evento_detalle.html',
+            context={'evento':evento_id,}
+        )

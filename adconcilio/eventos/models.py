@@ -29,6 +29,9 @@ class Evento(models.Model):
     class Meta:
         ordering = ["nombre"]
         
+    def get_absolute_url(self):
+        return reverse('evento-detalle', args=[str(self.id)])
+        
     def __str__(self):
 
         return self.nombre   
