@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<div class="fh5co-loader"></div>
+  <div id="page">
+   
+   <div class="container-wrap">
+       <div id="fh5co-events">
+         <div class="row animate-box">
+            <div class="col-md-6 col-md-offset-3 text-center fh5co-heading">
+               <h2>Nuestros Eventos</h2>
+               <p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+            </div>
+         </div>
+         {% if evento_list %}
+         {% for evento in evento_list %}
+         <div class="row">
+            <div class="col-md-4 animate-box">
+               <div class="events-entry">
+                  {% load i18n %}
+                  {% language 'es' %}
+                  <span class="date">{{evento.fecha_inicio }}</span>
+                  {% endlanguage %}
+                  <h3><a href="{{ evento.get_absolute_url }}">{{ evento.nombre }}</a></h3>
+                  <p>{{evento.descripcion}}</p>
+                  <a href="#">Inscribase <i class="icon-arrow-right3"></i></a>
+               </div>
+            </div>
+          {% endfor %}  
+          {% else %}
+            <p>No hay eventos disponibles.</p>
+          {% endif %}     
+         </div>
+   </div>
+     
+{% endblock %}

@@ -20,8 +20,15 @@ def index(request):
 
 
 class EventoListView(generic.ListView):
+    model = Evento
+    
+    
 
+class EventoDetalleView(generic.DetailView):
+    model = Evento
+    
     def evento_detalle_view(request,pk):
+    
         try:
             evento_id=Evento.objects.get(pk=pk)
         except Evento.DoesNotExist:
