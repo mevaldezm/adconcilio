@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+ADMIN_SITE_HEADER = "AD Concilio"
 
 INSTALLED_APPS = [
     'django.contrib.admin',

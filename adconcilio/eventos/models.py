@@ -157,7 +157,7 @@ class Localidad(models.Model):
     def __str__(self):
     
         return '{0}, {1}'.format(self.nombre, self.direccion)
-
+''''
 class Participante(models.Model):
 
     numeric = RegexValidator(r'^[0-9]*$', 'Solo numeros son permitidos')
@@ -175,20 +175,27 @@ class Participante(models.Model):
     def __str__(self):
     
         return '{0}, {1}'.format(self.apellido, self.nombre)
+'''
 
 class Registro(models.Model):
       
     evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
     exposicion = models.ForeignKey('Exposicion', on_delete=models.SET_NULL, null=True)
-    participante  = models.ForeignKey('Participante', on_delete=models.SET_NULL, null=True)
+    numeric = RegexValidator(r'^[0-9]*$', 'Solo numeros son permitidos')
+    cedula = models.CharField(max_length=11, blank=True, null=True, validators=[numeric])
+    nombre = models.CharField(max_length=30)
+    apellido = models.CharField(max_length=30)
+    direccion = models.CharField(max_length=120)
+    correo = models.EmailField()
+    telefono = models.CharField(max_length=10)
     fecha = models.DateField(default=datetime.today, editable=False)
-    
+        
     class Meta:
-        ordering = ['evento', 'participante']
+        ordering = ['evento']
         
     def __str__(self):
     
-        return '{0}; {1}, {2} '.format(self.evento.nombre, self.participante.apellido, self.participante.nombre)
+        return '{0}; {1}, {2} '.format(self.evento.nombre, self.apellido, self.nombre)
         
 '''
 class Factura(models.Model):

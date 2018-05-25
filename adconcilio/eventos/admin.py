@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Evento, Material, Promocion, Exposicion, Localidad, Expositor, Registro, Participante, Ciclo, Programa
+from .models import Evento, Material, Promocion, Exposicion, Localidad, Expositor, Registro, Ciclo, Programa
 
 admin.site.register(Evento)
 admin.site.register(Material)
@@ -12,4 +12,4 @@ admin.site.register(Expositor)
 admin.site.register(Registro)
 admin.site.register(Programa)
 admin.site.register(Ciclo)
-admin.site.register(Participante)
+

@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="fh5co-loader"></div>
+<div id="page">
+<div class="container-wrap">
+   <div id="fh5co-events">
+            
+         <form action="" method="post">
+            {% csrf_token %}
+            <table>
+               {{ form.as_table }}
+            </table>
+            <input type="submit" value="Registrar" />
+         </form>
+      
+   </div>
+</div>
+{% endblock %}
