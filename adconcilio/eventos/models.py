@@ -181,13 +181,14 @@ class Registro(models.Model):
       
     evento = models.ForeignKey('Evento', on_delete=models.SET_NULL, null=True)
     exposicion = models.ForeignKey('Exposicion', on_delete=models.SET_NULL, null=True)
-    numeric = RegexValidator(r'^[0-9]*$', 'Solo numeros son permitidos')
-    cedula = models.CharField(max_length=11, blank=True, null=True, validators=[numeric])
-    nombre = models.CharField(max_length=30)
-    apellido = models.CharField(max_length=30)
-    direccion = models.CharField(max_length=120)
-    correo = models.EmailField()
-    telefono = models.CharField(max_length=10)
+    #numeric = RegexValidator(r'^[0-9]*$', 'Solo numeros son permitidos')
+    #cedula = models.CharField(max_length=11, blank=True, null=True, validators=[numeric])
+    cedula = models.CharField(max_length=11, blank=True, null=True,)
+    nombre = models.CharField(max_length=30, blank=True, null=True)
+    apellido = models.CharField(max_length=30, blank=True, null=True)
+    direccion = models.CharField(max_length=120, blank=True, null=True)
+    correo = models.EmailField(blank=True, null=True)
+    telefono = models.CharField(max_length=10, blank=True, null=True)
     fecha = models.DateField(default=datetime.today, editable=False)
         
     class Meta:
